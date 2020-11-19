@@ -1,6 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
+let usernam: string = "hello";
+
 export default function App() {
   return (
     <div className="App">
