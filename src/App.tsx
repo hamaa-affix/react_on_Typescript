@@ -1,13 +1,11 @@
-import * as React from "react";
+import React from "react";
+import Demo from "./Demo";
 import "./styles.css";
 
-let usernam: string = "hello";
-
-export default function App() {
+export const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
-    </div>
+    <>
+      <Demo text="hell react" />
+    </>
   );
-}
+};
