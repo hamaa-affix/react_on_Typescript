@@ -1,22 +1,61 @@
-import React, {useEffect, useState} from "react";
-import {db} from "./models/firebase.ts";
+import { FormControl, TextField, List } from "@material-ui/core";
+import AddtoPhotoIcon from "@material-ui/icons/AddToPhotos";
+import React, { useEffect, useState } from "react";
+import { db } from "./models/firebase";
+import "./styles.css";
 
-interface TaskType {
-  id: number;
-  title: string;
-}
+import TaskItem from "./componets/TaskItem";
 
 const App: React.FC = () => {
-  const [tasks, setTasks] = useState({id: "", title: ""});
+  const [tasks, setTasks] = useState([{ id: "", title: "" }]);
+  const [input, setInput] = useState("");
+  //databaseの状態監視
   useEffect(() => {
-    const  unsub = db.collection("tasks").onSnapshot((snapshot) => {
+    //mounmtされるタイミングでdbへアクセスしてデータを取得している。
+    const unSub = db.collection("tasks").onSnapshot((snapshot) => {
+      //取得したデータはstateへ格納
       setTasks(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          title: doc.data().title
-        }))
-      )
-    })
+        snapshot.docs.map((doc) => ({ id: doc.id, title: doc.data().title }))
+      );
+    });
+    return () => unSub();
   }, []);
-  return();
-}
+
+  const newTask = (e: React.MouseEvent<HTMLButtonElement>) => {
+    db.collection("tasks").add({ title: input });
+    setInput("");
+  };
+
+  return (
+    <>
+      <div className="App">
+        <h1>Todo App React/firebase</h1>
+        <FormControl>
+          <TextField
+            InputLabelProps={{
+              shrink: true
+            }}
+            label="New task?"
+            value={input}
+            //typewscriptの場合はeventオブジェクトの型を割りたてる必要がある
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInput(e.target.value)
+            }
+          />
+          <button disabled={!input} onClick={newTask}>
+            <AddtoPhotoIcon />
+          </button>
+
+          <List>
+            {tasks.map((task) => (
+              //TaskItemコンポーネントでinterfaceによる属性を指定しているので合わせないといけない
+              <TaskItem key={task.id} id={task.id} title={task.title} />
+            ))}
+          </List>
+        </FormControl>
+      </div>
+    </>
+  );
+};
+
+export default App;
