@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import TodoList from "./componets/TodoList";
-import NewTodo from "./componets/NewTodo";
-import Todo from "./Todo";
+import React, {useEffect, useState} from "react";
+import {db} from "./models/firebase.ts";
 
-export const App: React.FC = () => {
-  const [todos, setTodos] = useState<>([{ id: "", text: "" }]);
+interface TaskType {
+  id: number;
+  title: string;
+}
 
-  const todoAddHandler = (text: string) => {
-    setTodos({ id: Math.random().toString(), text: text });
-  };
-  return (
-    <>
-      <NewTodo onAddtodo={todoAddHandler} />
-      <TodoList items={todos} />
-    </>
-  );
-};
+const App: React.FC = () => {
+  const [tasks, setTasks] = useState({id: "", title: ""});
+  useEffect(() => {
+    const  unsub = db.collection("tasks").onSnapshot((snapshot) => {
+      setTasks(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title
+        }))
+      )
+    })
+  }, []);
+  return();
+}
