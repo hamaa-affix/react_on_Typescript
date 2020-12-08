@@ -1,14 +1,27 @@
 import { FormControl, TextField, List } from "@material-ui/core";
 import AddtoPhotoIcon from "@material-ui/icons/AddToPhotos";
+import { makeStyles } from "@material-ui/styles";
 import React, { useEffect, useState } from "react";
 import { db } from "./models/firebase";
-import "./styles.css";
-
+import styles from "./App.module.css";
+//componernt
 import TaskItem from "./componets/TaskItem";
 
+const useStyles = makeStyles({
+  field: {
+    marginTop: 30,
+    marginBottom: 20
+  },
+  list: {
+    margin: "auto",
+    width: "40%"
+  }
+});
 const App: React.FC = () => {
   const [tasks, setTasks] = useState([{ id: "", title: "" }]);
   const [input, setInput] = useState("");
+  //materialUiで使用するstyle
+  const classes = useStyles();
   //databaseの状態監視
   useEffect(() => {
     //mounmtされるタイミングでdbへアクセスしてデータを取得している。
@@ -28,10 +41,12 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="App">
+      <div className={styles.app__root}>
         <h1>Todo App React/firebase</h1>
+        <br />
         <FormControl>
           <TextField
+            className={classes.field}
             InputLabelProps={{
               shrink: true
             }}
@@ -42,11 +57,15 @@ const App: React.FC = () => {
               setInput(e.target.value)
             }
           />
-          <button disabled={!input} onClick={newTask}>
+          <button
+            className={styles.app__icon}
+            disabled={!input}
+            onClick={newTask}
+          >
             <AddtoPhotoIcon />
           </button>
 
-          <List>
+          <List className={classes.list}>
             {tasks.map((task) => (
               //TaskItemコンポーネントでinterfaceによる属性を指定しているので合わせないといけない
               <TaskItem key={task.id} id={task.id} title={task.title} />
