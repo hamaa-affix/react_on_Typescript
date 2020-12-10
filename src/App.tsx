@@ -1,8 +1,9 @@
 import { FormControl, TextField, List } from "@material-ui/core";
 import AddtoPhotoIcon from "@material-ui/icons/AddToPhotos";
 import { makeStyles } from "@material-ui/styles";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import React, { useEffect, useState } from "react";
-import { db } from "./models/firebase";
+import { db, auth } from "./models/firebase";
 import styles from "./App.module.css";
 //componernt
 import TaskItem from "./componets/TaskItem";
@@ -17,11 +18,18 @@ const useStyles = makeStyles({
     width: "40%"
   }
 });
-const App: React.FC = () => {
+const App: React.FC = (props: any) => {
   const [tasks, setTasks] = useState([{ id: "", title: "" }]);
   const [input, setInput] = useState("");
   //materialUiで使用するstyle
   const classes = useStyles();
+
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && props.history.push("login");
+    });
+    return () => unSub();
+  });
   //databaseの状態監視
   useEffect(() => {
     //mounmtされるタイミングでdbへアクセスしてデータを取得している。
@@ -43,6 +51,19 @@ const App: React.FC = () => {
     <>
       <div className={styles.app__root}>
         <h1>Todo App React/firebase</h1>
+        <button
+          className={styles.app__logout}
+          onClick={async () => {
+            try {
+              await auth.signOut();
+              props.history.push("/login");
+            } catch (error) {
+              alert(error.message);
+            }
+          }}
+        >
+          <ExitToAppIcon />
+        </button>
         <br />
         <FormControl>
           <TextField

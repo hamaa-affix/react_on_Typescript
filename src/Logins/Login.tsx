@@ -14,10 +14,11 @@ const Login: React.FC = (props: any) => {
   useEffect(() => {
     //認証関係の状態変化を監視するfirebaseメソッド　引数の中はuserをとる
     //userの中に認証情報が入ってくるが、空なら認証に失敗している
-    auth.onAuthStateChanged((user) => {
+    const unSub = auth.onAuthStateChanged((user) => {
       //user情報がからならhistyでhomeへ遷移させる
       user && props.history.push("/");
     });
+    return () => unSub();
   }, [props.history]);
   return (
     <>
