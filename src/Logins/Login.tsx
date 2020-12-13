@@ -5,7 +5,7 @@ import { Button, FormControl, TextField, Typography } from "@material-ui/core";
 import styles from "./Login.module.css";
 import { AlternateEmail } from "@material-ui/icons";
 
-//ここで受けているpropsはRouterのhisty　ページデータを補完しているprops = routeObject
+//ここで受けているpropsはRouterのhistoy　ページデータを補完しているprops = routeObject
 const Login: React.FC = (props: any) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -46,6 +46,7 @@ const Login: React.FC = (props: any) => {
             }}
             name="password"
             label="Password"
+            type="password"
             value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
